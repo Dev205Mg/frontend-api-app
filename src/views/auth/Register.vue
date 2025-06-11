@@ -14,7 +14,7 @@
               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
           </div>
         </div>
-        
+
         <div>
           <label for="email" class="block text-sm/6 font-medium text-gray-900">Email</label>
           <div class="mt-2">
@@ -87,13 +87,10 @@ const data = ref({
 });
 
 const register = async () => {
+  await axiosClient.get('/sanctum/csrf-cookie');
   try {
-    const response = await axiosClient.post('/api/register', data.value);
-    if (response.data.success) {
-      // Handle successful registration, e.g., redirect to login or dashboard
-      alert('Registration successful!');
-      // Redirect logic can be added here
-    }
+    const response = await axiosClient.post("/api/register", data.value);
+    alert('Registration success');
   } catch (error) {
     // Handle errors, e.g., show error messages
     console.error('Registration failed:', error.response.data);
