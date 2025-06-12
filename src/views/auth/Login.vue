@@ -2,7 +2,7 @@
   <GuestLayout>
     <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2>
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" action="#" method="POST">
+      <form class="space-y-6" @submit.prevent="login">
         <div>
           <label for="email" class="block text-sm/6 font-medium text-gray-900">Email</label>
           <div class="mt-2">
@@ -11,6 +11,7 @@
               id="email" 
               autocomplete="email" 
               required=""
+              v-model="data.email"
               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
           </div>
         </div>
@@ -25,6 +26,7 @@
               id="password" 
               autocomplete="current-password" 
               required=""
+              v-model="data.password"
               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
           </div>
         </div>
@@ -47,6 +49,31 @@
 </template>
 <script setup>
 import GuestLayout from '@/components/GuestLayout.vue';
+import axiosClient from '@/lib/axios';
+import router from '@/router';
+import { ref } from 'vue';
 
+const data = ref({
+  'email': '',
+  'password': ''
+})
+
+
+const login = async () => {
+  await axiosClient.get('sanctum/csrf-cookie');
+  try {
+    const response = await axiosClient.post('/api/login', data.value);
+    router.push({name: 'dashboard'})
+  } catch (error) {
+    if (error.response && error.response.status === 422) {
+      // Handle validation errors
+      console.error('Validation error:', error.response.data.errors);
+    } else {
+      // Handle other errors
+      console.error('Login failed:', error);
+      alert('Login failed. Please check your credentials and try again.');
+    }
+  }
+}
 
 </script>
