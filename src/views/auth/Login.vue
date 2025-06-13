@@ -77,6 +77,8 @@ const errors = reactive({
 
 const login = async () => {
   await axiosClient.get('sanctum/csrf-cookie');
+  errors.email = []
+  errors.password = []
   try {
     await axiosClient.post('/api/login', data.value);
     router.push({name: 'dashboard'})
