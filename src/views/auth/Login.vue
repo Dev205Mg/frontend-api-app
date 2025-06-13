@@ -14,6 +14,11 @@
               v-model="data.email"
               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
           </div>
+          <template v-if="errors.email && errors.email.length">
+            <span v-for="(msg, i) in errors.email" :key="i" class="text-red-500 text-sm italic">
+              {{ msg }}
+            </span>
+          </template>
         </div>
 
         <div>
@@ -29,6 +34,11 @@
               v-model="data.password"
               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
           </div>
+          <template v-if="errors.password && errors.password.length">
+            <span v-for="(msg, i) in errors.password" :key="i" class="text-red-500 text-sm italic">
+              {{ msg }}
+            </span>
+          </template>
         </div>
 
         <div>
@@ -51,27 +61,29 @@
 import GuestLayout from '@/components/GuestLayout.vue';
 import axiosClient from '@/lib/axios';
 import router from '@/router';
-import { ref } from 'vue';
+import { AxiosError } from 'axios';
+import { reactive, ref } from 'vue';
 
 const data = ref({
   'email': '',
   'password': ''
 })
 
+const errors = reactive({
+  'email': [],
+  'password': []
+})
+
 
 const login = async () => {
   await axiosClient.get('sanctum/csrf-cookie');
   try {
-    const response = await axiosClient.post('/api/login', data.value);
+    await axiosClient.post('/api/login', data.value);
     router.push({name: 'dashboard'})
-  } catch (error) {
-    if (error.response && error.response.status === 422) {
-      // Handle validation errors
-      console.error('Validation error:', error.response.data.errors);
-    } else {
-      // Handle other errors
-      console.error('Login failed:', error);
-      alert('Login failed. Please check your credentials and try again.');
+  } catch (e) {
+    if(e instanceof AxiosError && e.response.status === 422) {
+      errors.email = e.response.data.errors.email
+      errors.password = e.response.data.errors.password
     }
   }
 }

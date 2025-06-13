@@ -9,6 +9,11 @@
             <input type="text" name="name" id="name" required="" v-model="data.name"
               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
           </div>
+          <template v-if="errors.name && errors.name.length">
+            <span v-for="(msg, i) in errors.name" :key="i" class="text-red-500 text-sm italic">
+              {{ msg }}
+            </span>
+          </template>
         </div>
 
         <div>
@@ -17,6 +22,11 @@
             <input type="email" name="email" id="email" autocomplete="email" required="" v-model="data.email"
               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
           </div>
+          <template v-if="errors.email && errors.email.length">
+            <span v-for="(msg, i) in errors.email" :key="i" class="text-red-500 text-sm italic">
+              {{ msg }}
+            </span>
+          </template>
         </div>
 
         <div>
@@ -27,6 +37,11 @@
             <input type="password" name="password" id="password" required="" v-model="data.password"
               class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
           </div>
+          <template v-if="errors.password && errors.password.length">
+            <span v-for="(msg, i) in errors.password" :key="i" class="text-red-500 text-sm italic">
+              {{ msg }}
+            </span>
+          </template>
         </div>
 
         <div>
@@ -62,7 +77,8 @@
 import GuestLayout from '@/components/GuestLayout.vue';
 import axiosClient from '@/lib/axios';
 import router from '@/router';
-import { ref } from 'vue';
+import { AxiosError } from 'axios';
+import { reactive, ref } from 'vue';
 
 const data = ref({
   name: '',
@@ -71,16 +87,25 @@ const data = ref({
   password_confirmation: ''
 });
 
+const errors = reactive({
+  name: [],
+  email: [],
+  password: [],
+});
+
 const register = async () => {
   await axiosClient.get("/sanctum/csrf-cookie");
   try {
     const response = await axiosClient.post("/api/register", data.value);
     router.push({name: 'dashboard'})
-  } catch (error) {
-    // Handle errors, e.g., show error messages
-    console.error('Registration failed:', error.response.data);
-    alert('Registration failed: ' + error.response.data.message);
+  } catch (e) {
+    if(e instanceof AxiosError && e.response.status === 422) {
+      errors.name = e.response.data.errors.name
+      errors.email = e.response.data.errors.email
+      errors.password = e.response.data.errors.password
+    }
   }
 };
+
 
 </script>
