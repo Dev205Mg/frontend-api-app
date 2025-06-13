@@ -97,6 +97,8 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
+import axiosClient from '@/lib/axios';
+import router from '@/router';
 
 const user = {
   name: 'Tom Cook',
@@ -109,7 +111,12 @@ const navigation = [
   { name: 'Dashboard', to: { name: 'dashboard' } },
 ]
 
-const logout = () => {
-  console.log('Logout')
+const logout = async () => {
+  try {
+    await axiosClient.post('/api/logout');
+    router.push({ name: 'login' });
+  } catch (error) {
+    console.error('Logout failed:', error);
+  }
 }
 </script>

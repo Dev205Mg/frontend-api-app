@@ -16,5 +16,18 @@
     </div>
   </main>
 </template>
-<script setup> 
+<script setup>
+import axiosClient from '@/lib/axios';
+
+ 
+  const user = async () => {
+    try {
+      const response = await axiosClient.get('/api/user');
+      console.log(response.data);
+    } catch (error) {
+      console.error('Failed to get user:', error);
+    }
+  };
+
+  user();
 </script>
