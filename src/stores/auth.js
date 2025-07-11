@@ -68,4 +68,9 @@ export const useAuthStore = defineStore('auth', () => {
     getUser,
     logout
   };
+}, {
+    persist: {
+      storage: localStorage,
+      paths: ['user', 'isLoggedIn'],
+    }
 })
