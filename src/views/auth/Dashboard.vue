@@ -18,7 +18,11 @@
 </template>
 <script setup>
 import { useAuthStore } from '@/stores/auth';
+import { onMounted } from 'vue';
 
 const auth = useAuthStore();
-auth.getUser();
+
+onMounted( async () => {
+  if(!auth.isLoggedIn) await auth.getUser()
+})
 </script>
