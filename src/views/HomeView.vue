@@ -1,4 +1,22 @@
 <script setup>
+// import axiosClient from '@/lib/axios';
+// import { ref } from 'vue';
+
+// const user = ref({
+//   name: '',
+//   email: '',
+// });
+
+// const getUser = async () => {
+//   try {
+//     const response = await axiosClient.get('/api/user');
+//     user.value = response.data
+//   } catch (error) {
+//     console.error('Failed to get user:', error);
+//   }
+// };
+
+// getUser();
 </script>
 
 <template>
