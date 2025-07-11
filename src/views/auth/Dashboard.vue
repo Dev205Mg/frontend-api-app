@@ -8,7 +8,7 @@
     <div class="relative isolate px-6 lg:px-8">
       <div class="mx-auto max-w-2xl py-7">
         <div class="text-center">
-          <h1 class="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl">Welcome back, {{ user?.name }}</h1>
+          <h1 class="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl">Welcome back, {{ auth.user?.name }}</h1>
           <p class="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">Anim aute id magna aliqua ad ad non
             deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat.</p>
         </div>
@@ -17,22 +17,8 @@
   </main>
 </template>
 <script setup>
-import axiosClient from '@/lib/axios';
-import { ref } from 'vue';
+import { useAuthStore } from '@/stores/auth';
 
-const user = ref({
-  name: '',
-  email: '',
-});
- 
-  const getUser = async () => {
-    try {
-      const response = await axiosClient.get('/api/user');
-      user.value = response.data
-    } catch (error) {
-      console.error('Failed to get user:', error);
-    }
-  };
-
-  getUser();
+const auth = useAuthStore();
+auth.getUser();
 </script>

@@ -2,7 +2,7 @@
   <GuestLayout>
     <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2>
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" @submit.prevent="login">
+      <form class="space-y-6" @submit.prevent="submit">
         <div>
           <label for="email" class="block text-sm/6 font-medium text-gray-900">Email</label>
           <div class="mt-2">
@@ -59,9 +59,7 @@
 </template>
 <script setup>
 import GuestLayout from '@/components/GuestLayout.vue';
-import axiosClient from '@/lib/axios';
-import router from '@/router';
-import { AxiosError } from 'axios';
+import { useAuthStore } from '@/stores/auth';
 import { reactive, ref } from 'vue';
 
 const data = ref({
@@ -74,20 +72,10 @@ const errors = reactive({
   'password': []
 })
 
+const auth = useAuthStore();
 
-const login = async () => {
-  await axiosClient.get('sanctum/csrf-cookie');
-  errors.email = []
-  errors.password = []
-  try {
-    await axiosClient.post('/api/login', data.value);
-    router.push({name: 'dashboard'})
-  } catch (e) {
-    if(e instanceof AxiosError && e.response.status === 422) {
-      errors.email = e.response.data.errors.email
-      errors.password = e.response.data.errors.password
-    }
-  }
+const submit = () => {
+  auth.login(data.value, errors);
 }
 
 </script>
