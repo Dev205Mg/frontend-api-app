@@ -1,4 +1,5 @@
 import router from '@/router';
+import { useAuthStore } from '@/stores/auth';
 import axios from 'axios';
 
 const axiosClient = axios.create({
@@ -19,13 +20,27 @@ axiosClient.interceptors.response.use(
     // Handle successful responses
     return response;
   },
-  (error) => {
+  async (error) => {
     // Handle errors globally
-    if (error.response && error.response.status === 401) {
-      router.push({name: 'login'});
+    const auth = useAuthStore();
+    switch(error.response.status) {
+      case 401:
+        auth.cleanState();
+        router.push({name: 'login'});
+        break;
+      case 404:
+        router.push({name: 'NotFound'})
+        break;
+      case 419:
+        auth.cleanState();
+        router.push({name: 'login'});
+        break;
+      case 500:
+        router.push({name: 'errorServeur'});
+        break;
     }
 
-    throw error; // Re-throw the error to be handled by the calling code
+    return Promise.reject(error);
   }
 );
 

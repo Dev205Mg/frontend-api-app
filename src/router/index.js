@@ -6,6 +6,7 @@ import Dashboard from '@/views/auth/Dashboard.vue'
 import DefaultLayout from '@/components/DefaultLayout.vue'
 import NotFound from '@/views/NotFound.vue'
 import { useAuthStore } from '@/stores/auth'
+import ErrorServeur from '@/views/ErrorServeur.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +44,11 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: NotFound,
+    },
+    { 
+      path: '/500',
+      name: 'errorServeur',
+      component: ErrorServeur,
     },
   ],
 })

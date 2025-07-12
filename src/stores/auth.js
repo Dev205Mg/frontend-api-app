@@ -49,11 +49,15 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
+  const cleanState = () => {
+    user.value = null;
+    isLoggedIn.value = false;
+  }
+
   const logout = async () => {
     try {
       await axiosClient.post('/api/logout');
-      user.value = null;
-      isLoggedIn.value = false;
+      cleanState();
       router.push({ name: 'login' });
     } catch (error) {
       console.error('Logout failed:', error);
@@ -66,6 +70,7 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     login,
     getUser,
+    cleanState,
     logout
   };
 }, {
