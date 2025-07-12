@@ -31,6 +31,7 @@
                     <span class="absolute -inset-1.5" />
                     <span class="sr-only">Open user menu</span>
                     <img class="size-8 rounded-full" :src="userAuth.imageUrl" alt="" />
+                    <span class="ms-2 text-base/5 font-medium text-white">{{ userAuth.name }}</span>
                   </MenuButton>
                 </div>
                 <transition enter-active-class="transition ease-out duration-100"
